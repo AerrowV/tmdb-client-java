@@ -27,5 +27,4 @@ public class MovieDTO {
 
     @JsonProperty("overview")
     private String overview;
-
 }

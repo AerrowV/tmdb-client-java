@@ -6,16 +6,14 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@Getter
-@NoArgsConstructor
-@ToString
 @Entity
+@Data
+@NoArgsConstructor
 public class Director {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String name;
 
     @OneToMany(mappedBy = "director", cascade = CascadeType.PERSIST)

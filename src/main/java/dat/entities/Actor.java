@@ -6,14 +6,12 @@ import lombok.*;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@ToString
-@Getter
 public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String name;
 
     @ManyToMany(mappedBy = "actors", cascade = CascadeType.PERSIST)

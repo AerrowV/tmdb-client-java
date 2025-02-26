@@ -6,16 +6,13 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@Getter
-@NoArgsConstructor
-@ToString
 @Entity
+@Data
+@NoArgsConstructor
 public class Genre {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String name;
 
     @ManyToMany(mappedBy = "genres", cascade = CascadeType.PERSIST)
