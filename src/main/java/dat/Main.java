@@ -9,8 +9,5 @@ public class Main {
 
         List<Long> movieIds = FetchDanishMovies.fetchMovieIds();
 
-        System.out.println("Fetched Movie IDs: " + movieIds);
-
-
     }
 }

@@ -26,20 +26,39 @@ public class FetchDanishMovies {
 
     public static List<Long> fetchMovieIds() {
         List<Long> movieIds = new ArrayList<>();
+        String urlWithFirstPage = apiUrl + "&page=1";
 
         try {
-            String jsonResponse = getDataFromUrl(apiUrl);
+            String firstPageResponse = getDataFromUrl(urlWithFirstPage);
+            if (firstPageResponse == null) {
+                return movieIds;
+            }
 
-            if (jsonResponse != null) {
-                MovieResponseDTO movieResponse = objectMapper.readValue(jsonResponse, MovieResponseDTO.class);
+            MovieResponseDTO firstMovieResponse =
+                    objectMapper.readValue(firstPageResponse, MovieResponseDTO.class);
 
-                for (MovieDTO movie : movieResponse.results) {
-                    movieIds.add(movie.getId());
+            for (MovieDTO movie : firstMovieResponse.results) {
+                movieIds.add(movie.getId());
+            }
+
+            int totalPages = firstMovieResponse.total_pages;
+
+            for (int page = 2; page <= totalPages; page++) {
+                String urlWithPage = apiUrl + "&page=" + page;
+                String jsonResponse = getDataFromUrl(urlWithPage);
+
+                if (jsonResponse != null) {
+                    MovieResponseDTO movieResponse =
+                            objectMapper.readValue(jsonResponse, MovieResponseDTO.class);
+                    for (MovieDTO movie : movieResponse.results) {
+                        movieIds.add(movie.getId());
+                    }
                 }
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
         return movieIds;
     }
 
