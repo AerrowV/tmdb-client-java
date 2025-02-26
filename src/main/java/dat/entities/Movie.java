@@ -26,5 +26,6 @@ public class Movie {
     private Set<Genre> genres = new HashSet<>();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    private Set<Director> directors = new HashSet<>();
+    private Director director;
+
 }

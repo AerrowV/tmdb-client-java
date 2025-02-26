@@ -19,8 +19,6 @@ public class Director {
     private String name;
 
     @OneToMany(mappedBy = "director", cascade = CascadeType.PERSIST)
-    private Set<Director> directors = new HashSet<>();
-
-
+    private Set<Movie> movies = new HashSet<>();
 
 }
