@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDTO {
+
     private Long id;
     private String title;
 

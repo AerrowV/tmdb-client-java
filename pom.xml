@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dat</groupId>
-    <artifactId>week4demo</artifactId>
+    <artifactId>SP1_TMDb</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -17,6 +17,7 @@
         <junit.version>5.11.4</junit.version>
         <postgres.version>42.7.5</postgres.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -50,10 +51,11 @@
         </dependency>
 
         <!--  LOMBOK    -->
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
+            <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
 
@@ -78,4 +80,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>
