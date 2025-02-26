@@ -14,6 +14,7 @@ import java.util.Set;
 public class Movie {
 
     @Id
+    @Column(unique=true)
     private Integer id;
     private String title;
 
