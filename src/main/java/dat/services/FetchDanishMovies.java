@@ -82,4 +82,33 @@ public class FetchDanishMovies {
             return null;
         }
     }
+
+    public static MovieDTO fetchMovieDetails(Long movieId) {
+        String url = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + apiKey;
+
+        try {
+            String jsonResponse = getDataFromUrl(url);
+            if (jsonResponse != null) {
+                return objectMapper.readValue(jsonResponse, MovieDTO.class);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void printAllMovieDetails() {
+        List<Long> movieIds = fetchMovieIds();
+
+        for (Long movieId : movieIds) {
+            MovieDTO movie = fetchMovieDetails(movieId);
+            if (movie != null) {
+                System.out.println("Movie ID: " + movie.getId());
+                System.out.println("Title: " + movie.getTitle());
+                System.out.println("Release Date: " + movie.getReleaseDate());
+                System.out.println("Overview: " + movie.getOverview());
+                System.out.println("-----------------------------");
+            }
+        }
+    }
 }

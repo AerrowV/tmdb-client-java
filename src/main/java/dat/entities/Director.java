@@ -18,7 +18,7 @@ public class Director {
     private Integer id;
     private String name;
 
-    @OneToMany(mappedBy = "director", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "director", cascade = CascadeType.PERSIST)
     private Set<Director> directors = new HashSet<>();
 
 

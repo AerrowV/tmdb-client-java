@@ -18,7 +18,7 @@ public class Genre {
     private Integer id;
     private String name;
 
-    @ManyToMany(mappedBy = "genres", cascade = CascadeType.ALL) // Corrected field name
+    @ManyToMany(mappedBy = "genres", cascade = CascadeType.PERSIST)
     private Set<Movie> movies = new HashSet<>();
 
 }
