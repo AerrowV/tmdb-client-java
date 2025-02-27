@@ -1,18 +1,20 @@
 package dat.daos;
 
-import dat.entities.Genre;
 import dat.dto.GenreDTO;
-import dat.services.DTOMapper;
+import dat.entities.Genre;
 import dat.exceptions.ApiException;
+import dat.services.DTOMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+
 import java.util.List;
 
 public class GenreDAO implements IDAO<Genre, Long> {
     private static EntityManagerFactory emf;
     private static GenreDAO instance = null;
 
-    public GenreDAO() {}
+    public GenreDAO() {
+    }
 
     public static GenreDAO getInstance(EntityManagerFactory _emf) {
         if (emf == null) {
@@ -22,28 +24,37 @@ public class GenreDAO implements IDAO<Genre, Long> {
         return instance;
     }
 
+    public Genre saveFromDTO(GenreDTO genreDTO) {
+        try (EntityManager em = emf.createEntityManager()) {
+            try {
+                em.getTransaction().begin();
+
+                Genre genre = em.find(Genre.class, genreDTO.getId());
+                if (genre != null) {
+                    System.out.println("Genre already exists: " + genre.getName());
+                    em.getTransaction().commit();
+                    return genre;
+                }
+
+                genre = DTOMapper.genreToEntity(genreDTO);
+                em.persist(genre);
+                em.getTransaction().commit();
+                System.out.println("New genre saved: " + genre.getName());
+
+                return genre;
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                throw new ApiException(401, "An error occurred while saving the genre: " + e.getMessage());
+            }
+        }
+    }
+
+
     @Override
     public Genre save(Genre genre) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
-                em.persist(genre);
-                em.getTransaction().commit();
-                return genre;
-            } catch (Exception e) {
-                em.getTransaction().rollback();
-                throw new ApiException(401, "An error occurred while saving the genre");
-            }
-        }
-    }
-
-    // Method to save a Genre from a DTO
-    public Genre saveFromDTO(GenreDTO genreDTO) {
-        try (EntityManager em = emf.createEntityManager()) {
-            try {
-                em.getTransaction().begin();
-                // Use DTOMapper to convert DTO to Entity
-                Genre genre = DTOMapper.toEntity(genreDTO);
                 em.persist(genre);
                 em.getTransaction().commit();
                 return genre;

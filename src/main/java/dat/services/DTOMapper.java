@@ -27,19 +27,22 @@ public class DTOMapper {
         movie.setActor(actors);
         return movie;
     }
-    public static Actor toEntity(ActorDTO dto) {
+
+    public static Actor actorToEntity(ActorDTO dto) {
         Actor actor = new Actor();
         actor.setId(dto.getId());
         actor.setName(dto.getName());
         return actor;
     }
-    public static Genre toEntity(GenreDTO dto) {
+
+    public static Genre genreToEntity(GenreDTO dto) {
         Genre genre = new Genre();
         genre.setId(dto.getId());
         genre.setName(dto.getName());
         return genre;
     }
-    public static Director toEntity(DirectorDTO dto) {
+
+    public static Director directorToEntity(DirectorDTO dto) {
         Director director = new Director();
         director.setId(dto.getId());
         director.setName(dto.getName());

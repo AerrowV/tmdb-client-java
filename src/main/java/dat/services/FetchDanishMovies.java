@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import dat.dto.MovieDTO;
-import dat.dto.MovieResponseDTO;
+import dat.dto.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -90,6 +89,53 @@ public class FetchDanishMovies {
             String jsonResponse = getDataFromUrl(url);
             if (jsonResponse != null) {
                 return objectMapper.readValue(jsonResponse, MovieDTO.class);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static GenreResponseDTO fetchGenreDetails() {
+        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + apiKey;
+
+        try {
+            String jsonResponse = getDataFromUrl(url);
+            if (jsonResponse != null) {
+                return objectMapper.readValue(jsonResponse, GenreResponseDTO.class);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<DirectorDTO> fetchDirectorDetails(Long movieId) {
+        MovieCreditsDTO credits = fetchMovieCredits(movieId);
+        List<DirectorDTO> directors = new ArrayList<>();
+
+        if (credits != null && credits.getCrew() != null) {
+            for (DirectorDTO crewMember : credits.getCrew()) {
+                if ("Director".equalsIgnoreCase(crewMember.getJob())) {
+                    directors.add(crewMember);
+                }
+            }
+        }
+        return directors;
+    }
+
+    public static List<ActorDTO> fetchActorDetails(Long movieId) {
+        MovieCreditsDTO credits = fetchMovieCredits(movieId);
+        return (credits != null) ? credits.getCast() : new ArrayList<>();
+    }
+
+    public static MovieCreditsDTO fetchMovieCredits(Long movieId) {
+        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/credits?api_key=" + apiKey;
+
+        try {
+            String jsonResponse = getDataFromUrl(url);
+            if (jsonResponse != null) {
+                return objectMapper.readValue(jsonResponse, MovieCreditsDTO.class);
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
