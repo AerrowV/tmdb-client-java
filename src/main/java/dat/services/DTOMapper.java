@@ -1,6 +1,8 @@
 package dat.services;
 
 import dat.dto.ActorDTO;
+import dat.dto.DirectorDTO;
+import dat.dto.GenreDTO;
 import dat.dto.MovieDTO;
 import dat.entities.Actor;
 import dat.entities.Director;
@@ -30,6 +32,18 @@ public class DTOMapper {
         actor.setId(dto.getId());
         actor.setName(dto.getName());
         return actor;
+    }
+    public static Genre toEntity(GenreDTO dto) {
+        Genre genre = new Genre();
+        genre.setId(dto.getId());
+        genre.setName(dto.getName());
+        return genre;
+    }
+    public static Director toEntity(DirectorDTO dto) {
+        Director director = new Director();
+        director.setId(dto.getId());
+        director.setName(dto.getName());
+        return director;
     }
 }
 
