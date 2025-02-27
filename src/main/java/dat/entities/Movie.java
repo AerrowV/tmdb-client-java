@@ -19,6 +19,7 @@ public class Movie {
     private String releaseDate;
     private Double rating;
     private Double popularity;
+    @Column(length = 10000)
     private String overview;
 
     @ManyToMany(cascade = CascadeType.PERSIST)

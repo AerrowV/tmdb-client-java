@@ -10,10 +10,9 @@ import java.util.Set;
 @NoArgsConstructor
 public class Actor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "actors", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "actor", cascade = CascadeType.PERSIST)
     private Set<Movie> movies;
 }

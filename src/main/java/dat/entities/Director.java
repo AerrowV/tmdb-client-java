@@ -10,9 +10,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class Director {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 

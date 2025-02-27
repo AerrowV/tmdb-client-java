@@ -83,12 +83,10 @@ public class ActorDAO implements IDAO<Actor, Long> {
         }
     }
 
-    // Additional method to save from DTO (not part of the IDAO interface)
-    public Actor saveFromDTO(ActorDTO actorDTO) {
+    public Actor saveActorFromDTO(ActorDTO actorDTO) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
-                // Use DTOMapper to convert DTO to Entity
                 Actor actor = DTOMapper.toEntity(actorDTO);
                 em.persist(actor);
                 em.getTransaction().commit();
