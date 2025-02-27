@@ -25,7 +25,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
         return instance;
     }
 
-    public Movie saveFromDTO(MovieDTO movieDTO) {
+    public Movie saveMovieFromDTO(MovieDTO movieDTO) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
