@@ -11,4 +11,9 @@ public class DirectorDTO {
     private Long id;
     private String name;
 
+    public DirectorDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
 }

@@ -1,6 +1,8 @@
 package dat.services;
 
 import dat.dto.ActorDTO;
+import dat.dto.DirectorDTO;
+import dat.dto.GenreDTO;
 import dat.dto.MovieDTO;
 import dat.entities.Actor;
 import dat.entities.Director;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class DTOMapper {
 
-    public static Movie toEntity(MovieDTO dto, Collection<Genre> genres, Director director, List<Actor> actors) {
+    public static Movie movieToEntity(MovieDTO dto, Collection<Genre> genres, Director director, List<Actor> actors) {
         Movie movie = new Movie();
         movie.setId(dto.getId());
         movie.setTitle(dto.getTitle());
@@ -25,11 +27,24 @@ public class DTOMapper {
         movie.setActor(actors);
         return movie;
     }
-    public static Actor toEntity(ActorDTO dto) {
+    public static Actor actorToEntity(ActorDTO actorDTO) {
         Actor actor = new Actor();
-        actor.setId(dto.getId());
-        actor.setName(dto.getName());
+        actor.setId(actorDTO.getId());
+        actor.setName(actorDTO.getName());  // Assuming ActorDTO has a 'name' field
+        // Add more fields as necessary
         return actor;
     }
+    public static Genre genreToEntity(GenreDTO genreDTO) {
+        Genre genre = new Genre();
+        genre.setId(genreDTO.getId());
+        genre.setName(genreDTO.getName());
+        return genre;
+    }
+    public static Director directorToEntity(DirectorDTO directorDTO) {
+        Director director = new Director();
+        director.setId(directorDTO.getId());
+        director.setName(directorDTO.getName());  // Assuming DirectorDTO has a 'name' field
+        // Add more fields as necessary
+        return director;
+    }
 }
-

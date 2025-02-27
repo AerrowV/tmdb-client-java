@@ -39,6 +39,6 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
-    private Collection<Actor> actor = new HashSet<>();
+    private Collection<Actor> actors = new HashSet<>();
 
 }
