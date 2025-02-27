@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DTOMapper {
 
-    public static Movie toEntity(MovieDTO dto, Collection<Genre> genres, Director director, List<Actor> actors) {
+    public static Movie movieToEntity(MovieDTO dto, Collection<Genre> genres, Director director, List<Actor> actors) {
         Movie movie = new Movie();
         movie.setId(dto.getId());
         movie.setTitle(dto.getTitle());

@@ -55,7 +55,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                     actors.add(actorDAO.saveActorFromDTO(actorDTO));
                 }
 
-                Movie movie = DTOMapper.toEntity(movieDTO, genres, director, actors);
+                Movie movie = DTOMapper.movieToEntity(movieDTO, genres, director, actors);
                 em.persist(movie);
                 em.getTransaction().commit();
 

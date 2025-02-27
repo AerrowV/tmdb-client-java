@@ -1,9 +1,6 @@
 package dat.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,12 +11,11 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class Genre {
-
     @Id
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "genres", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "genres", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Movie> movies = new HashSet<>();
 
 }
