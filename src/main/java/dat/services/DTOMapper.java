@@ -1,5 +1,6 @@
 package dat.services;
 
+import dat.dto.ActorDTO;
 import dat.dto.MovieDTO;
 import dat.entities.Actor;
 import dat.entities.Director;
@@ -24,4 +25,11 @@ public class DTOMapper {
         movie.setActor(actors);
         return movie;
     }
+    public static Actor toEntity(ActorDTO dto) {
+        Actor actor = new Actor();
+        actor.setId(dto.getId());
+        actor.setName(dto.getName());
+        return actor;
+    }
 }
+

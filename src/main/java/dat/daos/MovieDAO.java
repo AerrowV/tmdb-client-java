@@ -15,7 +15,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
     private static EntityManagerFactory emf;
     private static MovieDAO instance = null;
 
-    private MovieDAO() {}
+    public MovieDAO() {}
 
     public static MovieDAO getInstance(EntityManagerFactory _emf) {
         if (emf == null) {
