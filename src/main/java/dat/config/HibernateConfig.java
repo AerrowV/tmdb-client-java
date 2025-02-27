@@ -19,12 +19,12 @@ public class HibernateConfig {
     private static EntityManagerFactory emfTest;
     private static Boolean isTest = false;
 
-    public static void setTest(Boolean test) {
-        isTest = test;
-    }
-
     public static Boolean getTest() {
         return isTest;
+    }
+
+    public static void setTest(Boolean test) {
+        isTest = test;
     }
 
     public static EntityManagerFactory getEntityManagerFactory() {
@@ -34,7 +34,7 @@ public class HibernateConfig {
     }
 
     public static EntityManagerFactory getEntityManagerFactoryForTest() {
-        if (emfTest == null){
+        if (emfTest == null) {
             setTest(true);
             emfTest = createEMF(getTest());  // No DB needed for test
         }
@@ -43,10 +43,10 @@ public class HibernateConfig {
 
     // TODO: IMPORTANT: Add Entity classes here for them to be registered with Hibernate
     private static void getAnnotationConfiguration(Configuration configuration) {
-             configuration.addAnnotatedClass(Actor.class);
-             configuration.addAnnotatedClass(Movie.class);
-             configuration.addAnnotatedClass(Director.class);
-             configuration.addAnnotatedClass(Genre.class);
+        configuration.addAnnotatedClass(Actor.class);
+        configuration.addAnnotatedClass(Movie.class);
+        configuration.addAnnotatedClass(Director.class);
+        configuration.addAnnotatedClass(Genre.class);
 
     }
 
@@ -72,8 +72,7 @@ public class HibernateConfig {
             SessionFactory sf = configuration.buildSessionFactory(serviceRegistry);
             EntityManagerFactory emf = sf.unwrap(EntityManagerFactory.class);
             return emf;
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }

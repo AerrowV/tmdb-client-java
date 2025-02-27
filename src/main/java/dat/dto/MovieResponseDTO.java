@@ -1,6 +1,5 @@
 package dat.dto;
 
-import dat.entities.Movie;
 import lombok.Data;
 
 import java.util.List;

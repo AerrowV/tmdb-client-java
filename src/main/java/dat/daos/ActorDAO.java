@@ -1,18 +1,20 @@
 package dat.daos;
 
-import dat.entities.Actor;
 import dat.dto.ActorDTO;
+import dat.entities.Actor;
 import dat.exceptions.ApiException;
 import dat.services.DTOMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+
 import java.util.List;
 
 public class ActorDAO implements IDAO<Actor, Long> {
     private static EntityManagerFactory emf;
     private static ActorDAO instance = null;
 
-    public ActorDAO() {}
+    public ActorDAO() {
+    }
 
     public static ActorDAO getInstance(EntityManagerFactory _emf) {
         if (emf == null) {
@@ -20,6 +22,31 @@ public class ActorDAO implements IDAO<Actor, Long> {
             instance = new ActorDAO();
         }
         return instance;
+    }
+
+    public Actor saveActorFromDTO(ActorDTO actorDTO) {
+        try (EntityManager em = emf.createEntityManager()) {
+            try {
+                em.getTransaction().begin();
+
+                Actor actor = em.find(Actor.class, actorDTO.getId());
+                if (actor != null) {
+                    System.out.println("Actor already exists: " + actor.getName());
+                    em.getTransaction().commit();
+                    return actor;
+                }
+
+                actor = DTOMapper.actorToEntity(actorDTO);
+                em.persist(actor);
+                em.getTransaction().commit();
+                System.out.println("New actor saved: " + actor.getName());
+
+                return actor;
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                throw new ApiException(401, "An error occurred while saving the actor: " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -79,21 +106,6 @@ public class ActorDAO implements IDAO<Actor, Long> {
             } catch (Exception e) {
                 em.getTransaction().rollback();
                 throw new ApiException(401, "An error occurred while deleting the actor");
-            }
-        }
-    }
-
-    public Actor saveActorFromDTO(ActorDTO actorDTO) {
-        try (EntityManager em = emf.createEntityManager()) {
-            try {
-                em.getTransaction().begin();
-                Actor actor = DTOMapper.toEntity(actorDTO);
-                em.persist(actor);
-                em.getTransaction().commit();
-                return actor;
-            } catch (Exception e) {
-                em.getTransaction().rollback();
-                throw new ApiException(401, "An error occurred while saving the actor");
             }
         }
     }

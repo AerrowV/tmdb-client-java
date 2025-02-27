@@ -1,4 +1,5 @@
 package dat.dto;
+
 import lombok.Data;
 
 @Data
