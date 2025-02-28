@@ -11,10 +11,11 @@ import dat.entities.Movie;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class DTOMapper {
 
-    public static Movie movieToEntity(MovieDTO dto, Collection<Genre> genres, Director director, List<Actor> actors) {
+    public static Movie movieToEntity(MovieDTO dto, Set<Genre> genres, Director director, Set<Actor> actors) {
         Movie movie = new Movie();
         movie.setId(dto.getId());
         movie.setTitle(dto.getTitle());
@@ -24,7 +25,7 @@ public class DTOMapper {
         movie.setOverview(dto.getOverview());
         movie.setGenres(genres);
         movie.setDirector(director);
-        movie.setActor(actors);
+        movie.setActors(actors);
         return movie;
     }
 

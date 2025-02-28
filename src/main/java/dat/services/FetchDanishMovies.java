@@ -2,6 +2,7 @@ package dat.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dat.dto.*;
@@ -11,7 +12,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FetchDanishMovies {
 
@@ -87,8 +90,22 @@ public class FetchDanishMovies {
 
         try {
             String jsonResponse = getDataFromUrl(url);
+            //System.out.println("Raw API Response: " + jsonResponse);
+
             if (jsonResponse != null) {
-                return objectMapper.readValue(jsonResponse, MovieDTO.class);
+                MovieDTO movieDTO = objectMapper.readValue(jsonResponse, MovieDTO.class);
+                //System.out.println("Deserialized MovieDTO: " + movieDTO);  // Logs the deserialized MovieDTO object
+
+                JsonNode rootNode = objectMapper.readTree(jsonResponse);
+                JsonNode genresNode = rootNode.path("genres");
+
+                List<Integer> genreIds = new ArrayList<>();
+                for (JsonNode genreNode : genresNode) {
+                    genreIds.add(genreNode.path("id").asInt());
+                }
+                movieDTO.setGenreIds(genreIds);  // Set the genre IDs manually
+
+                return movieDTO;
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -96,18 +113,23 @@ public class FetchDanishMovies {
         return null;
     }
 
-    public static GenreResponseDTO fetchGenreDetails() {
+    public static Set<GenreDTO> fetchAllGenres() {
         String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + apiKey;
+
 
         try {
             String jsonResponse = getDataFromUrl(url);
+            //System.out.println("Raw API Response: " + jsonResponse);
             if (jsonResponse != null) {
-                return objectMapper.readValue(jsonResponse, GenreResponseDTO.class);
+                GenreResponseDTO genreResponse = objectMapper.readValue(jsonResponse, GenreResponseDTO.class);
+                //System.out.println("Deserialized genres: " + genreResponse.getGenres());
+                return new HashSet<>(genreResponse.getGenres());
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return new HashSet<>(); // Return empty list if error occurs
     }
 
     public static List<DirectorDTO> fetchDirectorDetails(Long movieId) {

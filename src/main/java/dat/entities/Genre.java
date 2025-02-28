@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -21,4 +22,8 @@ public class Genre {
     @ManyToMany(mappedBy = "genres", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private Set<Movie> movies = new HashSet<>();
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

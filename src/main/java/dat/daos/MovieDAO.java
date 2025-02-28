@@ -14,7 +14,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MovieDAO implements IDAO<Movie, Integer> {
     private static EntityManagerFactory emf;
@@ -31,17 +33,14 @@ public class MovieDAO implements IDAO<Movie, Integer> {
         return instance;
     }
 
-    public Movie saveMovieFromDTO(MovieDTO movieDTO, List<GenreDTO> genreDTOs, List<DirectorDTO> directorDTOs, List<ActorDTO> actorDTOs) {
+    public Movie saveMovieFromDTO(MovieDTO movieDTO, Set<GenreDTO> allGenres, List<DirectorDTO> directorDTOs, List<ActorDTO> actorDTOs) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
                 System.out.println("Saving movie: " + movieDTO.getTitle());
-
                 GenreDAO genreDAO = GenreDAO.getInstance(emf);
-                List<Genre> genres = new ArrayList<>();
-                for (GenreDTO genreDTO : genreDTOs) {
-                    genres.add(genreDAO.saveFromDTO(genreDTO));
-                }
+
+                Set<Genre> genres = genreDAO.mapGenreIdsToGenres(movieDTO.getGenreIds(), allGenres, em);
 
                 DirectorDAO directorDAO = DirectorDAO.getInstance(emf);
                 Director director = null;
@@ -50,7 +49,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                 }
 
                 ActorDAO actorDAO = ActorDAO.getInstance(emf);
-                List<Actor> actors = new ArrayList<>();
+                Set<Actor> actors = new HashSet<>();
                 for (ActorDTO actorDTO : actorDTOs) {
                     actors.add(actorDAO.saveActorFromDTO(actorDTO));
                 }
@@ -66,6 +65,19 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                 System.err.println("Error while saving movie: " + e.getMessage());
                 throw new ApiException(401, "An error occurred while saving the movie: " + e.getMessage());
             }
+        }
+    }
+
+    public List<Movie> readMovie(String movieName) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT m FROM Movie m " +
+                                    "LEFT JOIN FETCH m.genres " +
+                                    "LEFT JOIN FETCH m.director " +
+                                    "LEFT JOIN FETCH m.actors " +
+                                    "WHERE m.title = :movieName", Movie.class)
+                    .setParameter("movieName", movieName)
+                    .getResultList();
         }
     }
 

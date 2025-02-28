@@ -7,7 +7,12 @@ import dat.services.DTOMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class GenreDAO implements IDAO<Genre, Long> {
     private static EntityManagerFactory emf;
@@ -47,6 +52,27 @@ public class GenreDAO implements IDAO<Genre, Long> {
                 throw new ApiException(401, "An error occurred while saving the genre: " + e.getMessage());
             }
         }
+    }
+
+    public Set<Genre> mapGenreIdsToGenres(List<Integer> genreIds, Set<GenreDTO> allGenres, EntityManager em) {
+        Map<Long, GenreDTO> genreMap = allGenres.stream()
+                .collect(Collectors.toMap(GenreDTO::getId, Function.identity()));
+
+        Set<Genre> genres = new HashSet<>();
+        for (Integer genreId : genreIds) {
+            GenreDTO genreDTO = genreMap.get(Long.valueOf(genreId));
+            if (genreDTO != null) {
+                Genre genre = em.find(Genre.class, genreDTO.getId());  // Check once
+                if (genre == null) {
+                    genre = new Genre();
+                    genre.setId(genreDTO.getId());
+                    genre.setName(genreDTO.getName());
+                    em.persist(genre);  // Save new genre only once
+                }
+                genres.add(genre);
+            }
+        }
+        return genres;
     }
 
 

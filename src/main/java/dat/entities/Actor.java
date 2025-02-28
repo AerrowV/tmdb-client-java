@@ -1,12 +1,10 @@
 package dat.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -17,6 +15,7 @@ public class Actor {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "actor", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    private Set<Movie> movies;
+    @ManyToMany(mappedBy = "actors", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Movie> movies = new HashSet<>();
+
 }
