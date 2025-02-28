@@ -3,7 +3,7 @@ package dat.daos;
 import java.util.List;
 
 public interface IDAO<T, I> {
-    T save(T t);
+    T create(T t);
 
     T read(I i);
 

@@ -51,7 +51,7 @@ public class DirectorDAO implements IDAO<Director, Long> {
     }
 
     @Override
-    public Director save(Director director) {
+    public Director create(Director director) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();

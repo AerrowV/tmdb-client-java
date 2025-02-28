@@ -51,7 +51,7 @@ public class GenreDAO implements IDAO<Genre, Long> {
 
 
     @Override
-    public Genre save(Genre genre) {
+    public Genre create(Genre genre) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
