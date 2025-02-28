@@ -1,52 +1,49 @@
 package dat;
 
+import dat.config.HibernateConfig;
 import dat.daos.MovieDAO;
-import dat.dto.MovieDTO;
-import dat.entities.Actor;
-import dat.entities.Director;
-import dat.entities.Genre;
-import dat.entities.Movie;
-import dat.services.DTOMapper;
+import dat.dto.*;
+import dat.services.FetchDanishMovies;
+import jakarta.persistence.EntityManagerFactory;
 
-import java.util.Collection;
 import java.util.List;
 
-import static dat.services.FetchDanishMovies.*;
-
 public class Main {
+    private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+    private static final MovieDAO MOVIE_DAO = MovieDAO.getInstance(emf);
+
     public static void main(String[] args) {
+        List<GenreDTO> genres = getGenres();
+        System.out.println("Fetched Genres: " + genres);
 
-        List<Long> movieIds = fetchMovieIds();  // Fetch list of movie IDs
+        List<Long> movieIds = FetchDanishMovies.fetchMovieIds();
+        processMovies(movieIds, genres);
+    }
 
+    private static List<GenreDTO> getGenres() {
+        GenreResponseDTO genreResponse = FetchDanishMovies.fetchGenreDetails();
+        return (genreResponse != null) ? genreResponse.getGenres() : List.of();
+    }
+
+    private static void processMovies(List<Long> movieIds, List<GenreDTO> genres) {
         for (Long movieId : movieIds) {
-            MovieDTO movieDTO = fetchMovieDetails(movieId);// Fetch movie details as DTO
-            List<Actor> actorDTOs = fetchActorDetails(movieId);
-            Collection<Genre> genreDTOs = fetchGenreDetails(movieId);
-            Director director = fetchDirectorDetails(movieId);
-
-            if (movieDTO != null) {
-                DTOMapper mapper = new DTOMapper();
-                // Convert MovieDTO to Movie entity
-                Movie movie = mapper.movieToEntity(movieDTO, genreDTOs, director, actorDTOs);
-
-                // Save Movie entity to the database
-                MovieDAO movieDAO = new MovieDAO();
-                movieDAO.save(movie);
-            }
+            saveMovie(movieId, genres);
         }
     }
-    public static Movie convertDTOToEntity(MovieDTO movieDTO) {
-        Movie movie = new Movie();
 
-        // Map each field from MovieDTO to Movie entity
-        movie.setId((movieDTO.getId())); // Map the id
-        movie.setTitle(movieDTO.getTitle()); // Map the title
-        movie.setReleaseDate(movieDTO.getReleaseDate()); // Map the release date
-        movie.setRating(movieDTO.getRating()); // Map the rating
-        movie.setPopularity(movieDTO.getPopularity()); // Map the popularity
-        movie.setOverview(movieDTO.getOverview()); // Map the overview
+    private static void saveMovie(Long movieId, List<GenreDTO> genres) {
+        MovieDTO movieDTO = FetchDanishMovies.fetchMovieDetails(movieId);
+        if (movieDTO == null) return;
 
-        return movie; // Return the populated Movie entity
+        System.out.println("Fetching details for: " + movieDTO.getTitle());
+
+        List<ActorDTO> actors = FetchDanishMovies.fetchActorDetails(movieId);
+        List<DirectorDTO> directors = FetchDanishMovies.fetchDirectorDetails(movieId);
+
+        System.out.println("Actors: " + actors);
+        System.out.println("Directors: " + directors);
+
+        MOVIE_DAO.saveMovieFromDTO(movieDTO, genres, directors, actors);
+        System.out.println("Saved Movie: " + movieDTO.getTitle());
     }
-
 }

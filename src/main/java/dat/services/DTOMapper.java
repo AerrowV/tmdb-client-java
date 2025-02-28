@@ -27,24 +27,26 @@ public class DTOMapper {
         movie.setActor(actors);
         return movie;
     }
-    public static Actor actorToEntity(ActorDTO actorDTO) {
+
+    public static Actor actorToEntity(ActorDTO dto) {
         Actor actor = new Actor();
-        actor.setId(actorDTO.getId());
-        actor.setName(actorDTO.getName());  // Assuming ActorDTO has a 'name' field
-        // Add more fields as necessary
+        actor.setId(dto.getId());
+        actor.setName(dto.getName());
         return actor;
     }
-    public static Genre genreToEntity(GenreDTO genreDTO) {
+
+    public static Genre genreToEntity(GenreDTO dto) {
         Genre genre = new Genre();
-        genre.setId(genreDTO.getId());
-        genre.setName(genreDTO.getName());
+        genre.setId(dto.getId());
+        genre.setName(dto.getName());
         return genre;
     }
-    public static Director directorToEntity(DirectorDTO directorDTO) {
+
+    public static Director directorToEntity(DirectorDTO dto) {
         Director director = new Director();
-        director.setId(directorDTO.getId());
-        director.setName(directorDTO.getName());  // Assuming DirectorDTO has a 'name' field
-        // Add more fields as necessary
+        director.setId(dto.getId());
+        director.setName(dto.getName());
         return director;
     }
 }
+

@@ -1,21 +1,27 @@
 package dat.daos;
 
-import dat.entities.Movie;
-import dat.entities.Genre;
-import dat.entities.Director;
-import dat.entities.Actor;
+import dat.dto.ActorDTO;
+import dat.dto.DirectorDTO;
+import dat.dto.GenreDTO;
 import dat.dto.MovieDTO;
-import dat.services.DTOMapper;
+import dat.entities.Actor;
+import dat.entities.Director;
+import dat.entities.Genre;
+import dat.entities.Movie;
 import dat.exceptions.ApiException;
+import dat.services.DTOMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieDAO implements IDAO<Movie, Integer> {
     private static EntityManagerFactory emf;
     private static MovieDAO instance = null;
 
-    public MovieDAO() {}
+    public MovieDAO() {
+    }
 
     public static MovieDAO getInstance(EntityManagerFactory _emf) {
         if (emf == null) {
@@ -25,34 +31,44 @@ public class MovieDAO implements IDAO<Movie, Integer> {
         return instance;
     }
 
-    public Movie saveMovieFromDTO(MovieDTO movieDTO) {
+    public Movie saveMovieFromDTO(MovieDTO movieDTO, List<GenreDTO> genreDTOs, List<DirectorDTO> directorDTOs, List<ActorDTO> actorDTOs) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
+                System.out.println("Saving movie: " + movieDTO.getTitle());
 
-                List<Genre> genres = em.createQuery(
-                                "SELECT g FROM Genre g WHERE g.id IN :ids", Genre.class)
-                        .setParameter("ids", movieDTO.getGenreIds())
-                        .getResultList();
+                GenreDAO genreDAO = GenreDAO.getInstance(emf);
+                List<Genre> genres = new ArrayList<>();
+                for (GenreDTO genreDTO : genreDTOs) {
+                    genres.add(genreDAO.saveFromDTO(genreDTO));
+                }
 
-                Director director = em.find(Director.class, movieDTO.getId());
+                DirectorDAO directorDAO = DirectorDAO.getInstance(emf);
+                Director director = null;
+                if (!directorDTOs.isEmpty()) {
+                    director = directorDAO.saveFromDTO(directorDTOs.get(0));
+                }
 
-                List<Actor> actors = em.createQuery(
-                                "SELECT a FROM Actor a WHERE a.id IN :ids", Actor.class)
-                        .setParameter("ids", List.of(1, 2))
-                        .getResultList();
+                ActorDAO actorDAO = ActorDAO.getInstance(emf);
+                List<Actor> actors = new ArrayList<>();
+                for (ActorDTO actorDTO : actorDTOs) {
+                    actors.add(actorDAO.saveActorFromDTO(actorDTO));
+                }
 
                 Movie movie = DTOMapper.movieToEntity(movieDTO, genres, director, actors);
-
                 em.persist(movie);
                 em.getTransaction().commit();
+
+                System.out.println("Movie saved successfully: " + movieDTO.getTitle());
                 return movie;
             } catch (Exception e) {
                 em.getTransaction().rollback();
-                throw new ApiException(401, "An error occurred while saving the movie");
+                System.err.println("Error while saving movie: " + e.getMessage());
+                throw new ApiException(401, "An error occurred while saving the movie: " + e.getMessage());
             }
         }
     }
+
 
     @Override
     public Movie create(Movie movie) {

@@ -5,17 +5,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dat.dto.*;
-import dat.entities.Actor;
-import dat.entities.Director;
-import dat.entities.Genre;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
-
-import static dat.services.DTOMapper.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FetchDanishMovies {
 
@@ -100,51 +96,46 @@ public class FetchDanishMovies {
         return null;
     }
 
-    public static List<Actor> fetchActorDetails(Long movieId) {
-        String url = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + apiKey;
+    public static GenreResponseDTO fetchGenreDetails() {
+        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + apiKey;
 
         try {
             String jsonResponse = getDataFromUrl(url);
-            ActorResponseDTO response = objectMapper.readValue(jsonResponse, ActorResponseDTO.class);
-            List<Actor> actors = new ArrayList<>();
-            for (ActorDTO actorDTO : response.getActors()) {
-                actors.add(actorToEntity(actorDTO));
+            if (jsonResponse != null) {
+                return objectMapper.readValue(jsonResponse, GenreResponseDTO.class);
             }
-            return actors;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static Collection<Genre> fetchGenreDetails(Long movieId) {
-        String url = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + apiKey;
+    public static List<DirectorDTO> fetchDirectorDetails(Long movieId) {
+        MovieCreditsDTO credits = fetchMovieCredits(movieId);
+        List<DirectorDTO> directors = new ArrayList<>();
 
-        try {
-            String jsonResponse = getDataFromUrl(url);
-            if (jsonResponse != null) {
-                GenreResponseDTO response = objectMapper.readValue(jsonResponse, GenreResponseDTO.class);
-                Collection<Genre> genres = new HashSet<>();
-                for (GenreDTO genreDTO : response.getGenres()) {
-                    genres.add(genreToEntity(genreDTO));
+        if (credits != null && credits.getCrew() != null) {
+            for (DirectorDTO crewMember : credits.getCrew()) {
+                if ("Director".equalsIgnoreCase(crewMember.getJob())) {
+                    directors.add(crewMember);
                 }
-                return genres;
             }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
         }
-        return Collections.emptyList();
+        return directors;
     }
 
-    public static Director fetchDirectorDetails(Long movieId) {
-        String url = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + apiKey;
+    public static List<ActorDTO> fetchActorDetails(Long movieId) {
+        MovieCreditsDTO credits = fetchMovieCredits(movieId);
+        return (credits != null) ? credits.getCast() : new ArrayList<>();
+    }
+
+    public static MovieCreditsDTO fetchMovieCredits(Long movieId) {
+        String url = "https://api.themoviedb.org/3/movie/" + movieId + "/credits?api_key=" + apiKey;
 
         try {
             String jsonResponse = getDataFromUrl(url);
             if (jsonResponse != null) {
-                DirectorResponseDTO response = objectMapper.readValue(jsonResponse, DirectorResponseDTO.class);
-                DirectorDTO directorDTO = response.getDirector();
-                return directorToEntity(directorDTO);
+                return objectMapper.readValue(jsonResponse, MovieCreditsDTO.class);
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
