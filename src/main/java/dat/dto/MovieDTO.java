@@ -25,6 +25,9 @@ public class MovieDTO {
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;
 
+    @JsonProperty("genres")
+    private List<GenreDTO> genres;
+
     @JsonProperty("overview")
     private String overview;
 }

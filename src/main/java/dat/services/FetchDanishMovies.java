@@ -11,7 +11,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FetchDanishMovies {
 
@@ -23,8 +25,8 @@ public class FetchDanishMovies {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .registerModule(new JavaTimeModule());
 
-    public static List<Long> fetchMovieIds() {
-        List<Long> movieIds = new ArrayList<>();
+    public static Set<Long> fetchMovieIds() {
+        Set<Long> movieIds = new HashSet<>();
         String urlWithFirstPage = apiUrl + "&page=1";
 
         try {
@@ -96,20 +98,6 @@ public class FetchDanishMovies {
         return null;
     }
 
-    public static GenreResponseDTO fetchGenreDetails() {
-        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + apiKey;
-
-        try {
-            String jsonResponse = getDataFromUrl(url);
-            if (jsonResponse != null) {
-                return objectMapper.readValue(jsonResponse, GenreResponseDTO.class);
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static List<DirectorDTO> fetchDirectorDetails(Long movieId) {
         MovieCreditsDTO credits = fetchMovieCredits(movieId);
         List<DirectorDTO> directors = new ArrayList<>();
@@ -124,9 +112,9 @@ public class FetchDanishMovies {
         return directors;
     }
 
-    public static List<ActorDTO> fetchActorDetails(Long movieId) {
+    public static Set<ActorDTO> fetchActorDetails(Long movieId) {
         MovieCreditsDTO credits = fetchMovieCredits(movieId);
-        return (credits != null) ? credits.getCast() : new ArrayList<>();
+        return (credits != null) ? credits.getCast() : new HashSet<>();
     }
 
     public static MovieCreditsDTO fetchMovieCredits(Long movieId) {
@@ -141,20 +129,5 @@ public class FetchDanishMovies {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static void printAllMovieDetails() {
-        List<Long> movieIds = fetchMovieIds();
-
-        for (Long movieId : movieIds) {
-            MovieDTO movie = fetchMovieDetails(movieId);
-            if (movie != null) {
-                System.out.println("Movie ID: " + movie.getId());
-                System.out.println("Title: " + movie.getTitle());
-                System.out.println("Release Date: " + movie.getReleaseDate());
-                System.out.println("Overview: " + movie.getOverview());
-                System.out.println("-----------------------------");
-            }
-        }
     }
 }

@@ -5,14 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieCreditsDTO {
 
     @JsonProperty("cast")
-    private List<ActorDTO> cast;
+    private Set<ActorDTO> cast;
 
     @JsonProperty("crew")
-    private List<DirectorDTO> crew;
+    private Set<DirectorDTO> crew;
 }

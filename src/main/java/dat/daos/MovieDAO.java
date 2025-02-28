@@ -33,7 +33,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
         return instance;
     }
 
-    public Movie saveMovieFromDTO(MovieDTO movieDTO, List<GenreDTO> genreDTOs, List<DirectorDTO> directorDTOs, List<ActorDTO> actorDTOs) {
+    public Movie saveMovieFromDTO(MovieDTO movieDTO, List<GenreDTO> genreDTOs, List<DirectorDTO> directorDTOs, Set<ActorDTO> actorDTOs) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
