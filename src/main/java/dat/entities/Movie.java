@@ -3,9 +3,12 @@ package dat.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Data
@@ -29,7 +32,7 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private Collection<Genre> genres = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "director_id")
@@ -41,5 +44,28 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
-    private Collection<Actor> actor = new HashSet<>();
+    private Set<Actor> actor = new HashSet<>();
+
+    @Override
+    public String toString() {
+        String directorName = (director != null) ? director.getName() : "Unknown";
+        String actorNames = actor.stream().map(Actor::getName).toList().toString();
+        String genreNames = genres.stream().map(Genre::getName).toList().toString();
+
+        return "\n==============================" +
+                "\n🎬 Movie: " + title +
+                "\n📅 Release Date: " + releaseDate +
+                "\n⭐ Rating: " + rating +
+                "\n🔥 Popularity: " + popularity +
+                "\nΦ Overview: " + overview +
+                "\n🎭 Actors: " + actorNames +
+                "\n🎞 Genres: " + genreNames +
+                "\n🎬 Director: " + directorName +
+                "\n==============================\n";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

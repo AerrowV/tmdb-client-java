@@ -6,8 +6,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -19,6 +21,11 @@ public class Genre {
     private String name;
 
     @ManyToMany(mappedBy = "genres", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ToString.Exclude
     private Set<Movie> movies = new HashSet<>();
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

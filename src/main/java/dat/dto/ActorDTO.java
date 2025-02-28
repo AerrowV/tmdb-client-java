@@ -9,5 +9,4 @@ public class ActorDTO {
 
     private Long id;
     private String name;
-
 }

@@ -6,8 +6,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.processing.Exclude;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -19,6 +22,11 @@ public class Director {
     private String name;
 
     @OneToMany(mappedBy = "director", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ToString.Exclude
     private Set<Movie> movies = new HashSet<>();
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

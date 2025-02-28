@@ -2,6 +2,7 @@ package dat.daos;
 
 import dat.dto.GenreDTO;
 import dat.entities.Genre;
+import dat.entities.Movie;
 import dat.exceptions.ApiException;
 import dat.services.DTOMapper;
 import jakarta.persistence.EntityManager;
@@ -110,4 +111,17 @@ public class GenreDAO implements IDAO<Genre, Long> {
             }
         }
     }
+
+    public List<Movie> getMoviesByGenre(String genreName) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT DISTINCT m FROM Movie m " +
+                            "JOIN FETCH m.genres g " +
+                            "LEFT JOIN FETCH m.actor " +
+                            "LEFT JOIN FETCH m.director " +
+                            "WHERE LOWER(g.name) = LOWER(:genre)", Movie.class)
+                    .setParameter("genre", genreName.toLowerCase())
+                    .getResultList();
+        }
+    }
+
 }

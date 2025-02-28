@@ -14,7 +14,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MovieDAO implements IDAO<Movie, Integer> {
     private static EntityManagerFactory emf;
@@ -38,7 +40,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                 System.out.println("Saving movie: " + movieDTO.getTitle());
 
                 GenreDAO genreDAO = GenreDAO.getInstance(emf);
-                List<Genre> genres = new ArrayList<>();
+                Set<Genre> genres = new HashSet<>();
                 for (GenreDTO genreDTO : genreDTOs) {
                     genres.add(genreDAO.saveFromDTO(genreDTO));
                 }
@@ -50,7 +52,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                 }
 
                 ActorDAO actorDAO = ActorDAO.getInstance(emf);
-                List<Actor> actors = new ArrayList<>();
+                Set<Actor> actors = new HashSet<>();
                 for (ActorDTO actorDTO : actorDTOs) {
                     actors.add(actorDAO.saveActorFromDTO(actorDTO));
                 }
@@ -128,6 +130,20 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                 em.getTransaction().rollback();
                 throw new ApiException(401, "An error occurred while deleting the movie");
             }
+        }
+    }
+
+    public List<Movie> getAllMoviesWithDetails() {
+        try (EntityManager em = emf.createEntityManager()) {
+            List<Movie> movies = em.createQuery(
+                            "SELECT m FROM Movie m " +
+                                    "LEFT JOIN FETCH m.director ", Movie.class)
+                    .getResultList();
+
+            movies.forEach(movie -> movie.getActor().size());
+
+            movies.forEach(movie -> movie.getGenres().size());
+            return movies;
         }
     }
 }

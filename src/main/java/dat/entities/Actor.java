@@ -1,12 +1,11 @@
 package dat.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -18,5 +17,11 @@ public class Actor {
     private String name;
 
     @ManyToMany(mappedBy = "actor", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ToString.Exclude
     private Set<Movie> movies;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
