@@ -50,7 +50,7 @@ public class ActorDAO implements IDAO<Actor, Long> {
     }
 
     @Override
-    public Actor save(Actor actor) {
+    public Actor create(Actor actor) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();

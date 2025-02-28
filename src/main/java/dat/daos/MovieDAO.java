@@ -55,7 +55,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
     }
 
     @Override
-    public Movie save(Movie movie) {
+    public Movie create(Movie movie) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
