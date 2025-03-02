@@ -10,7 +10,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MovieDTO {
 
-    private Long id;
+    private long id;
     private String title;
 
     @JsonProperty("release_date")

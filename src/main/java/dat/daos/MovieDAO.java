@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MovieDAO implements IDAO<Movie, Integer> {
+public class MovieDAO implements IDAO<Movie, Long> {
     private static EntityManagerFactory emf;
     private static MovieDAO instance = null;
 
@@ -87,7 +87,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
     }
 
     @Override
-    public Movie read(Integer id) {
+    public Movie read(Long id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(Movie.class, id);
         }
@@ -116,7 +116,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
