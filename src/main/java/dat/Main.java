@@ -13,11 +13,17 @@ import jakarta.persistence.EntityManagerFactory;
 import java.util.List;
 import java.util.Set;
 
-import static dat.controllers.MovieController.printAllMovies;
-import static dat.controllers.MovieController.processMovies;
+import static dat.controllers.MovieController.*;
 
 
 public class Main {
+
+    private static final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+    private static final MovieDAO MOVIE_DAO = MovieDAO.getInstance(emf);
+    private static final GenreDAO GENRE_DAO = GenreDAO.getInstance(emf);
+    private static final DirectorDAO DIRECTOR_DAO = DirectorDAO.getInstance(emf);
+    private static final ActorDAO ACTOR_DAO = ActorDAO.getInstance(emf);
+
     public static void main(String[] args) {
 
         //TODO adds movies, genres, actors and director to the database
@@ -31,6 +37,8 @@ public class Main {
 //        printAllMovies();
 //        GENRE_DAO.readAll().forEach(System.out::println);
 //        GENRE_DAO.getMoviesByGenre("western").forEach(System.out::println);
+//        searchMovieName("Bob");
 
+        //---------------------------------------------------------------
     }
 }

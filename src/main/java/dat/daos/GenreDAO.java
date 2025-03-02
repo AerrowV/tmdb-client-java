@@ -123,5 +123,4 @@ public class GenreDAO implements IDAO<Genre, Long> {
                     .getResultList();
         }
     }
-
 }

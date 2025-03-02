@@ -146,4 +146,17 @@ public class MovieDAO implements IDAO<Movie, Integer> {
             return movies;
         }
     }
+
+    public List<Movie> readMovie(String movieName) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT m FROM Movie m " +
+                                    "LEFT JOIN FETCH m.genres " +
+                                    "LEFT JOIN FETCH m.director " +
+                                    "LEFT JOIN FETCH m.actor " +
+                                    "WHERE LOWER(m.title) LIKE :movieName", Movie.class)
+                    .setParameter("movieName", "%" + movieName.toLowerCase() + "%")
+                    .getResultList();
+        }
+    }
 }

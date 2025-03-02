@@ -50,4 +50,17 @@ public class MovieController {
             saveMovie(movieId);
         }
     }
+
+    public static void searchMovieName(String movieName) {
+
+        List<Movie> movie = MOVIE_DAO.readMovie(movieName);
+
+        for (Movie selectedMovie : movie) {
+            System.out.println("Title: " + selectedMovie.getTitle());
+            System.out.println("Release Date: " + selectedMovie.getReleaseDate());
+            System.out.println("Rating: " + selectedMovie.getRating());
+            System.out.println("Popularity: " + selectedMovie.getPopularity());
+            System.out.println("Overview: " + selectedMovie.getOverview());
+        }
+    }
 }
