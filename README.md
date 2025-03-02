@@ -42,18 +42,10 @@ This command will compile the source code and package the application into a JAR
 
 ## Running the Application
 
-After building the project, execute the JAR file:
-
-```bash
-java -jar target/SP1_TMDb-1.0.jar
-```
-
-Replace `1.0` with the actual version number if it's different.
+TBA
 
 ## Usage
-
-Upon running, the application will prompt you to choose between searching for a movie, TV show, or actor. Follow the
-on-screen instructions to input your search query and navigate through the results.
+TBA
 
 ## Contributing
 
