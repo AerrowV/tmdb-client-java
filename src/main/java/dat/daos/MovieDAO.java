@@ -33,14 +33,18 @@ public class MovieDAO implements IDAO<Movie, Integer> {
         return instance;
     }
 
-    public Movie saveMovieFromDTO(MovieDTO movieDTO, Set<GenreDTO> allGenres, List<DirectorDTO> directorDTOs, List<ActorDTO> actorDTOs) {
+    public Movie saveMovieFromDTO(MovieDTO movieDTO, Set<GenreDTO> genreDTOs, List<DirectorDTO> directorDTOs, List<ActorDTO> actorDTOs) {
         try (EntityManager em = emf.createEntityManager()) {
             try {
                 em.getTransaction().begin();
                 System.out.println("Saving movie: " + movieDTO.getTitle());
-                GenreDAO genreDAO = GenreDAO.getInstance(emf);
 
-                Set<Genre> genres = genreDAO.mapGenreIdsToGenres(movieDTO.getGenreIds(), allGenres, em);
+                GenreDAO genreDAO = GenreDAO.getInstance(emf);
+                Set<Genre> genres = new HashSet<>();
+                for (GenreDTO genreDTO : genreDTOs) {
+                    genres.add(genreDAO.saveFromDTO(genreDTO));
+                }
+
 
                 DirectorDAO directorDAO = DirectorDAO.getInstance(emf);
                 Director director = null;
@@ -55,7 +59,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                 }
 
                 Movie movie = DTOMapper.movieToEntity(movieDTO, genres, director, actors);
-                em.persist(movie);
+                em.merge(movie);
                 em.getTransaction().commit();
 
                 System.out.println("Movie saved successfully: " + movieDTO.getTitle());
@@ -71,7 +75,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
     public List<Movie> readMovie(String movieName) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery(
-                            "SELECT m FROM Movie m " +
+                            "SELECT DISTINCT m FROM Movie m " +
                                     "LEFT JOIN FETCH m.genres " +
                                     "LEFT JOIN FETCH m.director " +
                                     "LEFT JOIN FETCH m.actors " +
@@ -81,6 +85,35 @@ public class MovieDAO implements IDAO<Movie, Integer> {
         }
     }
 
+    public double getAverageForAllMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT AVG(m.rating) FROM Movie m", Double.class).getSingleResult();
+        }
+    }
+
+    public List<Movie> getTenLowestRatedMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.rating ASC", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
+
+    public List<Movie> getTenHighestRatedMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.rating DESC", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
+
+    public List<Movie> getMostPopularMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.popularity DESC", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
 
     @Override
     public Movie create(Movie movie) {

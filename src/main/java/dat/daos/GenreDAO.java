@@ -54,27 +54,6 @@ public class GenreDAO implements IDAO<Genre, Long> {
         }
     }
 
-    public Set<Genre> mapGenreIdsToGenres(List<Integer> genreIds, Set<GenreDTO> allGenres, EntityManager em) {
-        Map<Long, GenreDTO> genreMap = allGenres.stream()
-                .collect(Collectors.toMap(GenreDTO::getId, Function.identity()));
-
-        Set<Genre> genres = new HashSet<>();
-        for (Integer genreId : genreIds) {
-            GenreDTO genreDTO = genreMap.get(Long.valueOf(genreId));
-            if (genreDTO != null) {
-                Genre genre = em.find(Genre.class, genreDTO.getId());  // Check once
-                if (genre == null) {
-                    genre = new Genre();
-                    genre.setId(genreDTO.getId());
-                    genre.setName(genreDTO.getName());
-                    em.persist(genre);  // Save new genre only once
-                }
-                genres.add(genre);
-            }
-        }
-        return genres;
-    }
-
 
     @Override
     public Genre create(Genre genre) {

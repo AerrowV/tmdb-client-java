@@ -15,7 +15,7 @@ public class Actor {
     private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "actors", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Movie> movies = new HashSet<>();
+    @ManyToMany(mappedBy = "actors", cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    private Set<Movie> movies;
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,6 +25,9 @@ public class MovieDTO {
 
     @JsonProperty("genre_ids")
     private List<Integer> genreIds;
+
+    @JsonProperty("genres")
+    private Set<GenreDTO> genres;
 
     @JsonProperty("overview")
     private String overview;

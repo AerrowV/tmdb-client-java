@@ -113,24 +113,6 @@ public class FetchDanishMovies {
         return null;
     }
 
-    public static Set<GenreDTO> fetchAllGenres() {
-        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + apiKey;
-
-
-        try {
-            String jsonResponse = getDataFromUrl(url);
-            //System.out.println("Raw API Response: " + jsonResponse);
-            if (jsonResponse != null) {
-                GenreResponseDTO genreResponse = objectMapper.readValue(jsonResponse, GenreResponseDTO.class);
-                //System.out.println("Deserialized genres: " + genreResponse.getGenres());
-                return new HashSet<>(genreResponse.getGenres());
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return new HashSet<>(); // Return empty list if error occurs
-    }
 
     public static List<DirectorDTO> fetchDirectorDetails(Long movieId) {
         MovieCreditsDTO credits = fetchMovieCredits(movieId);
