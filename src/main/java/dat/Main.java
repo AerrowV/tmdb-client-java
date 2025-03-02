@@ -24,8 +24,8 @@ public class Main {
     public static void main(String[] args) {
 
         //TODO adds movies, genres, actors and director to the database
-        Set<Long> movieIds = FetchDanishMovies.fetchMovieIds();
-        processMovies(movieIds);
+//        Set<Long> movieIds = FetchDanishMovies.fetchMovieIds();
+//        processMovies(movieIds);
 
         //---------------------------------------------------------------
 
@@ -33,7 +33,7 @@ public class Main {
 //        DIRECTOR_DAO.readAll().forEach(System.out::println);
 //        printAllMovies();
 //        GENRE_DAO.readAll().forEach(System.out::println);
-//        GENRE_DAO.getMoviesByGenre("western").forEach(System.out::println);
+//        GENRE_DAO.getMoviesByGenre("romance").forEach(System.out::println);
 //        searchMovieName("Bob");
 //        averageRating();
 //        lowestRatedMovie();
