@@ -7,7 +7,6 @@ import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.processing.Exclude;
 
 import java.util.HashSet;
 import java.util.Objects;

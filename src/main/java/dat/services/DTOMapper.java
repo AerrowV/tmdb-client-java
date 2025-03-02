@@ -9,8 +9,6 @@ import dat.entities.Director;
 import dat.entities.Genre;
 import dat.entities.Movie;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 public class DTOMapper {

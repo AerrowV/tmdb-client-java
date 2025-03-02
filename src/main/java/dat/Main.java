@@ -5,15 +5,12 @@ import dat.daos.ActorDAO;
 import dat.daos.DirectorDAO;
 import dat.daos.GenreDAO;
 import dat.daos.MovieDAO;
-import dat.dto.*;
-import dat.entities.Movie;
 import dat.services.FetchDanishMovies;
 import jakarta.persistence.EntityManagerFactory;
 
-import java.util.List;
 import java.util.Set;
 
-import static dat.controllers.MovieController.*;
+import static dat.controllers.MovieController.processMovies;
 
 
 public class Main {
@@ -27,8 +24,8 @@ public class Main {
     public static void main(String[] args) {
 
         //TODO adds movies, genres, actors and director to the database
-//        Set<Long> movieIds = FetchDanishMovies.fetchMovieIds();
-//        processMovies(movieIds);
+        Set<Long> movieIds = FetchDanishMovies.fetchMovieIds();
+        processMovies(movieIds);
 
         //---------------------------------------------------------------
 
@@ -38,6 +35,10 @@ public class Main {
 //        GENRE_DAO.readAll().forEach(System.out::println);
 //        GENRE_DAO.getMoviesByGenre("western").forEach(System.out::println);
 //        searchMovieName("Bob");
+//        averageRating();
+//        lowestRatedMovie();
+//        topRatedMovie();
+//        mostPopularMovie();
 
         //---------------------------------------------------------------
     }

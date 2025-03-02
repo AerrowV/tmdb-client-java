@@ -13,7 +13,6 @@ import dat.services.DTOMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +57,7 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                 }
 
                 Movie movie = DTOMapper.movieToEntity(movieDTO, genres, director, actors);
-                em.persist(movie);
+                em.merge(movie);
                 em.getTransaction().commit();
 
                 System.out.println("Movie saved successfully: " + movieDTO.getTitle());
@@ -156,6 +155,44 @@ public class MovieDAO implements IDAO<Movie, Integer> {
                                     "LEFT JOIN FETCH m.actor " +
                                     "WHERE LOWER(m.title) LIKE :movieName", Movie.class)
                     .setParameter("movieName", "%" + movieName.toLowerCase() + "%")
+                    .getResultList();
+        }
+    }
+
+    public Double getAverageRating() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT AVG(m.rating) FROM Movie m", Double.class)
+                    .getSingleResult();
+        }
+    }
+
+    public List<Movie> getTopRatedMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT m FROM Movie m " +
+                                    "ORDER BY m.rating DESC", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
+
+    public List<Movie> getLowestRatedMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT m FROM Movie m " +
+                                    "ORDER BY m.rating ASC", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
+
+    public List<Movie> getMostPopularMovies() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT m FROM Movie m " +
+                                    "ORDER BY m.popularity DESC", Movie.class)
+                    .setMaxResults(10)
                     .getResultList();
         }
     }
