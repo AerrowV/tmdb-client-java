@@ -5,18 +5,15 @@ import dat.dto.ActorDTO;
 import dat.dto.DirectorDTO;
 import dat.dto.GenreDTO;
 import dat.dto.MovieDTO;
-import dat.entities.Actor;
-import dat.entities.Director;
-import dat.entities.Genre;
 import dat.entities.Movie;
-import dat.exceptions.ApiException;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MovieDAOTest {
