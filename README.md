@@ -1,6 +1,6 @@
 # SP1\_TMDb
 
-SP1\_TMDb is a Java-based application that interacts with The Movie Database (TMDb) API to retrieve and display information about movies, TV shows, and actors.
+SP1\_TMDb is a Java-based application that interacts with The Movie Database (TMDb) API to retrieve and display information about movies.
 
 ## Features
 
