@@ -5,12 +5,7 @@ import dat.daos.ActorDAO;
 import dat.daos.DirectorDAO;
 import dat.daos.GenreDAO;
 import dat.daos.MovieDAO;
-import dat.services.FetchDanishMovies;
 import jakarta.persistence.EntityManagerFactory;
-
-import java.util.Set;
-
-import static dat.controllers.MovieController.processMovies;
 
 
 public class Main {
