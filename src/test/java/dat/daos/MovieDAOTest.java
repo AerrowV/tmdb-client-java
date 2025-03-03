@@ -10,42 +10,47 @@ import dat.entities.Director;
 import dat.entities.Genre;
 import dat.entities.Movie;
 import dat.exceptions.ApiException;
-import jakarta.persistence.EntityManagerFactory;
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
+import jakarta.persistence.EntityManagerFactory;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MovieDAOTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private static MovieDAO movieDAO;
+@Testcontainers
+public class MovieDAOTest {
+
+    @Container
+    private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.3-alpine3.18")
+            .withDatabaseName("testdb")
+            .withUsername("test")
+            .withPassword("test");
+
     private static EntityManagerFactory emf;
+    private static MovieDAO movieDAO;
 
     @BeforeAll
-    static void setUpAll() {
+    static void setUp() {
+        System.setProperty("DB_NAME", "testdb");
+        System.setProperty("DB_USERNAME", "test");
+        System.setProperty("DB_PASSWORD", "test");
+        System.setProperty("CONNECTION_STR", "jdbc:postgresql://" + postgres.getHost() + ":" + postgres.getFirstMappedPort() + "/");
+
         emf = HibernateConfig.getEntityManagerFactoryForTest();
         movieDAO = MovieDAO.getInstance(emf);
     }
 
     @AfterAll
-    static void tearDownAll() {
+    static void tearDown() {
         if (emf != null) {
             emf.close();
-        }
-    }
-
-    @BeforeEach
-    void setUp() {
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            em.createQuery("DELETE FROM Movie").executeUpdate();
-            em.createQuery("DELETE FROM Actor").executeUpdate();
-            em.createQuery("DELETE FROM Director").executeUpdate();
-            em.createQuery("DELETE FROM Genre").executeUpdate();
-            em.getTransaction().commit();
         }
     }
 
@@ -54,6 +59,7 @@ class MovieDAOTest {
         Movie movie = new Movie();
         movie.setTitle("Inception");
         movie.setRating(8.8);
+        movie.setId(12345634L);
 
         Movie createdMovie = movieDAO.create(movie);
         assertNotNull(createdMovie.getId());
@@ -66,13 +72,14 @@ class MovieDAOTest {
         Movie movie = new Movie();
         movie.setTitle("The Dark Knight");
         movie.setRating(9.0);
+        movie.setId(12345634L);
 
         Movie createdMovie = movieDAO.create(movie);
         Movie foundMovie = movieDAO.read(createdMovie.getId());
 
         assertNotNull(foundMovie);
         assertEquals("The Dark Knight", foundMovie.getTitle());
-        assertEquals(9.0, foundMovie.getRating());
+        assertEquals(9.0f, foundMovie.getRating());
     }
 
     @Test
@@ -80,10 +87,12 @@ class MovieDAOTest {
         Movie movie1 = new Movie();
         movie1.setTitle("Movie 1");
         movie1.setRating(7.5);
+        movie1.setId(12345634L);
 
         Movie movie2 = new Movie();
         movie2.setTitle("Movie 2");
         movie2.setRating(8.0);
+        movie2.setId(123456234L);
 
         movieDAO.create(movie1);
         movieDAO.create(movie2);
@@ -97,6 +106,7 @@ class MovieDAOTest {
         Movie movie = new Movie();
         movie.setTitle("Old Title");
         movie.setRating(6.5);
+        movie.setId(12345634L);
 
         Movie createdMovie = movieDAO.create(movie);
         createdMovie.setTitle("New Title");
@@ -113,9 +123,11 @@ class MovieDAOTest {
         Movie movie = new Movie();
         movie.setTitle("Movie to Delete");
         movie.setRating(5.0);
+        movie.setId(12345634L);
 
         Movie createdMovie = movieDAO.create(movie);
-        long movieId = createdMovie.getId();
+        Long movieId = createdMovie.getId();
+
         movieDAO.delete(movieId);
         Movie deletedMovie = movieDAO.read(movieId);
 
@@ -129,12 +141,15 @@ class MovieDAOTest {
         movieDTO.setRating(8.6);
 
         GenreDTO genreDTO = new GenreDTO();
+        genreDTO.setId(1L);
         genreDTO.setName("Sci-Fi");
 
         DirectorDTO directorDTO = new DirectorDTO();
+        directorDTO.setId(1L);
         directorDTO.setName("Christopher Nolan");
 
         ActorDTO actorDTO = new ActorDTO();
+        actorDTO.setId(1L);
         actorDTO.setName("Matthew McConaughey");
 
         Set<ActorDTO> actorDTOs = new HashSet<>();
@@ -155,6 +170,7 @@ class MovieDAOTest {
         Movie movie = new Movie();
         movie.setTitle("The Matrix");
         movie.setRating(8.7);
+        movie.setId(12345634L);
 
         movieDAO.create(movie);
 
@@ -168,6 +184,7 @@ class MovieDAOTest {
         Movie movie = new Movie();
         movie.setTitle("The Matrix");
         movie.setRating(8.7);
+        movie.setId(12345634L);
 
         movieDAO.create(movie);
 
@@ -181,10 +198,12 @@ class MovieDAOTest {
         Movie movie1 = new Movie();
         movie1.setTitle("Movie 1");
         movie1.setRating(7.5);
+        movie1.setId(12345634L);
 
         Movie movie2 = new Movie();
         movie2.setTitle("Movie 2");
         movie2.setRating(8.5);
+        movie2.setId(123453634L);
 
         movieDAO.create(movie1);
         movieDAO.create(movie2);
@@ -216,10 +235,12 @@ class MovieDAOTest {
         Movie movie1 = new Movie();
         movie1.setTitle("Movie 1");
         movie1.setRating(5.0);
+        movie1.setId(12345634L);
 
         Movie movie2 = new Movie();
         movie2.setTitle("Movie 2");
         movie2.setRating(6.0);
+        movie2.setId(123452634L);
 
         movieDAO.create(movie1);
         movieDAO.create(movie2);
@@ -234,10 +255,12 @@ class MovieDAOTest {
         Movie movie1 = new Movie();
         movie1.setTitle("Movie 1");
         movie1.setPopularity(100.00);
+        movie1.setId(12345634L);
 
         Movie movie2 = new Movie();
         movie2.setTitle("Movie 2");
         movie2.setPopularity(50.00);
+        movie2.setId(123445634L);
 
         movieDAO.create(movie1);
         movieDAO.create(movie2);

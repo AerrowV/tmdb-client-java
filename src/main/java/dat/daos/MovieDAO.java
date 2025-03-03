@@ -79,7 +79,7 @@ public class MovieDAO implements IDAO<Movie, Long> {
                 em.persist(movie);
                 em.getTransaction().commit();
                 return movie;
-            } catch (Exception e) {
+            } catch (Exception e){
                 em.getTransaction().rollback();
                 throw new ApiException(401, "An error occurred while saving the movie");
             }
