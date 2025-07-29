@@ -39,3 +39,5 @@ Built as part of the SP1 semester project.
    ```bash
    git clone https://github.com/AerrowV/tmdb-client-java.git
    cd tmdb-client-java
+   ```
+---
